@@ -46,7 +46,7 @@ export default function BootstrapLayout({ children }) {
 
             {/* footer */}
             <footer className="container py-4">
-                <p className="text-center">© 2024 Company, Inc</p>
+                <p className="text-center">© 2026 Company, Inc</p>
             </footer>
         </div>
     );

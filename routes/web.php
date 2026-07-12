@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Product;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -65,3 +66,20 @@ Route::get('/infinite-scroll', function () {
 Route::get('/investment-log', function () {
     return Inertia::render('InvestmentLog');
 })->name('investment-log');
+
+
+//Ep04 ในclassroom เป็นต้นไป หมายถึงตั้งแต่ข้างล่างลงไปเป็น EP04
+Route::get('/product', function () {
+    $products = Product::all();
+    return Inertia::render('ProductList', compact('products') );
+})->name('product');
+
+//ดึงข้อมูลแบบที่ 2 (Fetch จาก GitHub JSON)
+Route::get('/product-others', function () {
+    return Inertia::render('ProductOthers');
+})->name('product-others');
+
+//quiz4
+Route::get('/quiz4', function () {
+    return Inertia::render('Quiz4');
+})->name('quiz4');

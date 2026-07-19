@@ -63,9 +63,11 @@ Route::get('/infinite-scroll', function () {
     return Inertia::render('InfiniteScrollExample');
 })->name('infinite-scroll');
 
+//------------------------------------------------
+//quiz3
 Route::get('/investment-log', function () {
     return Inertia::render('InvestmentLog');
-})->name('investment-log');
+})->name('investment-log'); //เวลาเปิดเว็ปใช้อันล่าง investment-log
 
 
 //Ep04 ในclassroom เป็นต้นไป หมายถึงตั้งแต่ข้างล่างลงไปเป็น EP04

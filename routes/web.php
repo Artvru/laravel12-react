@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\Product;
 
+use App\Models\Weight; //เชื่อมกับชื่อเดียวกันด้านล่างถ้าไม่มีอันนี้อันรล่างใช้ไม่ได้ 
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -85,3 +87,18 @@ Route::get('/product-others', function () {
 Route::get('/quiz4', function () {
     return Inertia::render('Quiz4');
 })->name('quiz4');
+
+//สัปดาห์ทีใหม่
+// Weight Tracker Routes
+Route::get('/weight-tracker', function () {
+    return Inertia::render('WeightTracker');
+})->name('weight-tracker');
+
+Route::get('/weight/create', function () {
+    return Inertia::render('WeightForm');
+})->name('weight.create');
+
+Route::get('/weight/{id}/edit', function ($id) {
+    $weight = Weight::findOrFail($id);
+    return Inertia::render('WeightForm', compact('weight'));
+})->name('weight.edit');

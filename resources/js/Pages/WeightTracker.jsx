@@ -1,6 +1,16 @@
 import BootstrapLayout from "@/Layouts/BootstrapLayout";
 import { Link } from "@inertiajs/react";
 import React, { useState, useEffect } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const WeightTracker = () => {
   const [weights, setWeights] = useState([]);
@@ -38,11 +48,39 @@ const WeightTracker = () => {
     }
   };
 
+  // จัดเรียงข้อมูลสำหรับ chart (จากเก่าไปใหม่)
+  const chartData = [...weights].reverse();
+
   return (
     <BootstrapLayout>
       <div className="container my-4">
         <h1>Weight Tracker - บันทึกน้ำหนัก</h1>
 
+        {/* CHART */}
+        {!loading && weights.length > 0 && (
+          <div className="mb-5 p-3 border rounded bg-light">
+            <h3>📈 กราฟแสดงน้ำหนัก</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="weight_date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="weight_value"
+                  stroke="#8884d8"
+                  name="Weight (kg)"
+                  dot={{ fill: "#8884d8", r: 5 }}
+                  activeDot={{ r: 7 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        {/* BUTTON ADD */}
         <Link
           href="/weight/create"
           className="btn btn-primary mb-3"
@@ -50,6 +88,7 @@ const WeightTracker = () => {
           + Add Weight
         </Link>
 
+        {/* TABLE */}
         {loading ? (
           <p>Loading...</p>
         ) : weights.length === 0 ? (

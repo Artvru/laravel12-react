@@ -102,3 +102,22 @@ Route::get('/weight/{id}/edit', function ($id) {
     $weight = Weight::findOrFail($id);
     return Inertia::render('WeightForm', compact('weight'));
 })->name('weight.edit');
+
+//--------------------------------------------------
+// เฉพาะ admin เท่านั้น
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin-only', function () {
+        return Inertia::render('Welcome', [
+            'message' => 'Welcome Admin!'
+        ]);
+    });
+});
+
+// เฉพาะ teacher เท่านั้น
+Route::middleware(['auth', 'role:teacher'])->group(function () {
+    Route::get('/teacher-only', function () {
+        return Inertia::render('Welcome', [
+            'message' => 'Welcome Teacher!'
+        ]);
+    });
+});

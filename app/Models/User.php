@@ -14,6 +14,16 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable; // 2. เพิ่ม HasApiTokens ตรงนี้
 
+    public function trainingEnrollments()
+    {
+        return $this->hasMany(TrainingEnrollment::class);
+    }
+
+    public function trainingAttempts()
+    {
+        return $this->hasMany(TrainingAttempt::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

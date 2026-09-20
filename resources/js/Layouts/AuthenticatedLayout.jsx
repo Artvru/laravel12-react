@@ -3,44 +3,60 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+    const [darkMode, setDarkMode] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        return localStorage.getItem('training-dark-mode') === 'true';
+    });
+
+    useEffect(() => {
+        document.documentElement.classList.toggle('dark', darkMode);
+        localStorage.setItem('training-dark-mode', String(darkMode));
+    }, [darkMode]);
+
+    const toggleDarkMode = () => setDarkMode((current) => !current);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
+        <div className="min-h-screen bg-gray-100 transition-colors dark:bg-slate-950">
+            <nav className="border-b border-gray-100 bg-white transition-colors dark:border-slate-800 dark:bg-slate-900">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
+
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('training.index')}
+                                    active={route().current('training.*')}
                                 >
-                                    Dashboard
+                                    Training hub
                                 </NavLink>
                             </div>
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
+                            <button
+                                type="button"
+                                onClick={toggleDarkMode}
+                                aria-label={darkMode ? 'เปิดโหมดสว่าง' : 'เปิดโหมดมืด'}
+                                title={darkMode ? 'โหมดสว่าง' : 'โหมดมืด'}
+                                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border-2 border-orange-500 bg-orange-50 px-3 text-2xl font-bold leading-none text-orange-700 shadow-sm transition hover:bg-orange-100 dark:border-orange-400 dark:bg-orange-950/50 dark:text-orange-300 dark:hover:bg-orange-900"
+                            >
+                                {darkMode ? '☀' : '☾'}
+                            </button>
                             <div className="relative ms-3">
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-slate-900 dark:text-slate-300 dark:hover:text-white"
                                             >
                                                 {user.name}
 
@@ -78,7 +94,16 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
                         </div>
 
-                        <div className="-me-2 flex items-center sm:hidden">
+                        <div className="-me-2 flex items-center gap-2 sm:hidden">
+                            <button
+                                type="button"
+                                onClick={toggleDarkMode}
+                                aria-label={darkMode ? 'เปิดโหมดสว่าง' : 'เปิดโหมดมืด'}
+                                title={darkMode ? 'โหมดสว่าง' : 'โหมดมืด'}
+                                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border-2 border-orange-500 bg-orange-50 px-3 text-2xl font-bold leading-none text-orange-700 shadow-sm transition hover:bg-orange-100 dark:border-orange-400 dark:bg-orange-950/50 dark:text-orange-300 dark:hover:bg-orange-900"
+                            >
+                                {darkMode ? '☀' : '☾'}
+                            </button>
                             <button
                                 onClick={() =>
                                     setShowingNavigationDropdown(
@@ -129,19 +154,19 @@ export default function AuthenticatedLayout({ header, children }) {
                 >
                     <div className="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
+                            href={route('training.index')}
+                            active={route().current('training.*')}
                         >
-                            Dashboard
+                            Training hub
                         </ResponsiveNavLink>
                     </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
+                    <div className="border-t border-gray-200 pb-1 pt-4 dark:border-slate-800">
                         <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
+                            <div className="text-base font-medium text-gray-800 dark:text-white">
                                 {user.name}
                             </div>
-                            <div className="text-sm font-medium text-gray-500">
+                            <div className="text-sm font-medium text-gray-500 dark:text-slate-400">
                                 {user.email}
                             </div>
                         </div>
@@ -163,7 +188,7 @@ export default function AuthenticatedLayout({ header, children }) {
             </nav>
 
             {header && (
-                <header className="bg-white shadow">
+                <header className="bg-white shadow dark:bg-slate-900">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>

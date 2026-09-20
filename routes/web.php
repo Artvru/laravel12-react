@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Product;
 
 use App\Models\Weight; //เชื่อมกับชื่อเดียวกันด้านล่างถ้าไม่มีอันนี้อันรล่างใช้ไม่ได้ 
+use App\Http\Controllers\TrainingController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -18,8 +19,17 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return redirect()->route('training.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/training', [TrainingController::class, 'index'])->name('training.index');
+    Route::post('/training/{course}/enroll', [TrainingController::class, 'enroll'])->name('training.enroll');
+    Route::post('/training/{course}/retake', [TrainingController::class, 'retake'])->name('training.retake');
+    Route::get('/training/quiz/{quiz}', [TrainingController::class, 'quiz'])->name('training.quiz');
+    Route::post('/training/quiz/{quiz}', [TrainingController::class, 'submitQuiz'])->name('training.quiz.submit');
+    Route::get('/training/course/{course}/content', [TrainingController::class, 'content'])->name('training.content');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -24,6 +24,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/training', [TrainingController::class, 'index'])->name('training.index');
+    Route::get('/training/history/{enrollment}', [TrainingController::class, 'history'])->name('training.history');
     Route::post('/training/{course}/enroll', [TrainingController::class, 'enroll'])->name('training.enroll');
     Route::post('/training/{course}/retake', [TrainingController::class, 'retake'])->name('training.retake');
     Route::get('/training/quiz/{quiz}', [TrainingController::class, 'quiz'])->name('training.quiz');

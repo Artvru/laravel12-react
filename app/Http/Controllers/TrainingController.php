@@ -84,6 +84,44 @@ class TrainingController extends Controller
             : back()->with('success', 'ลงทะเบียนคอร์สเรียบร้อยแล้ว');
     }
 
+    public function history(Request $request, TrainingEnrollment $enrollment)
+    {
+        abort_unless($enrollment->user_id === $request->user()->id, 403);
+
+        $enrollment->load('course.quizzes');
+        $quizIds = $enrollment->course->quizzes->pluck('id');
+        $attempts = TrainingAttempt::where('user_id', $request->user()->id)
+            ->whereIn('training_quiz_id', $quizIds)
+            ->latest('submitted_at')
+            ->get()
+            ->unique('training_quiz_id')
+            ->keyBy('training_quiz_id');
+
+        return Inertia::render('Training/History', [
+            'enrollment' => [
+                'id' => $enrollment->id,
+                'status' => $enrollment->status,
+                'registered_at' => $enrollment->created_at?->format('Y-m-d'),
+                'completed_at' => $enrollment->completed_at?->format('Y-m-d'),
+            ],
+            'course' => $enrollment->course->only([
+                'id', 'title', 'code', 'description', 'instructor', 'starts_at', 'duration_hours', 'level',
+            ]),
+            'results' => $enrollment->course->quizzes->map(function ($quiz) use ($attempts) {
+                $attempt = $attempts->get($quiz->id);
+
+                return [
+                    'type' => $quiz->type,
+                    'title' => $quiz->title,
+                    'pass_score' => $quiz->pass_score,
+                    'score' => $attempt?->score,
+                    'total_questions' => $attempt?->total_questions,
+                    'submitted_at' => $attempt?->submitted_at?->format('Y-m-d'),
+                ];
+            })->values(),
+        ]);
+    }
+
     public function retake(Request $request, TrainingCourse $course)
     {
         $user = $request->user();
